@@ -18,13 +18,21 @@ ${PAGINATION_ELEMENT}  xpath=//*[@id="pagination"]
 ${NEW_PRODUCT_BUTTON}  xpath=//*[@id="sidebar"]/div/ui-view/ui-view/div[1]/div[3]/div/a[1]
 ${PRODUCT_MODAL}       xpath=//*[@id="state-modal"]/div[2]
 
+# Product Locators
 ${INPUT_NAME}          xpath=//input[@ng-model='data.name']
 ${INPUT_ARTICLE}       xpath=//*[@id="state-modal"]/div[2]/div[2]/div/form/ng-include[1]/div/div[3]/div[3]/input
 ${INPUT_PURCHASE}      xpath=//input[@ng-model='data.purchase']
-${SAVE_BUTTON}         xpath=//a[contains(@class, 'ui button green') and not(contains(@class, 'disabled'))]//span[text()='Save']
+${BUTTON_SAVE_PRODUCT}         xpath=//a[contains(@class, 'ui button green') and not(contains(@class, 'disabled'))]//span[text()='Save']
+${BUTTON_GENERATE_BARCODE}    xpath=//*[@id="state-modal"]/div[2]/div[2]/div/form/ng-include[1]/div/div[3]/div[2]/label/span[2]/a
 
-${MARKING_DROPDOWN}    xpath=//*[@id="state-modal"]/div[2]/div[2]/div/form/ng-include[1]/div/div[4]/div[6]/div
-${MARKING_DROPDOWN_ITEM}    xpath=//*[@id="state-modal"]/div[2]/div[2]/div/form/ng-include[1]/div/div[4]/div[6]/div/div[2]/div[3]
+${MARKING_DROPDOWN}    xpath=//*[@id="state-modal"]/div[2]/div[2]/div/form/ng-include[1]/div/div[4]/div[3]/div
+${MARKING_DROPDOWN_ITEM}    xpath=//*[@id="state-modal"]/div[2]/div[2]/div/form/ng-include[1]/div/div[4]/div[3]/div/div[2]/div[29]
+
+${CATEGORIES_DROPDOWN}    xpath=//*[@id="state-modal"]/div[2]/div[2]/div/form/ng-include[1]/div/div[7]/div
+${CATEGORIES_DROPDOWN_ITEM}    xpath=//*[@id="state-modal"]/div[2]/div[2]/div/form/ng-include[1]/div/div[7]/div/div/div[2]
+
+${CHECKBOX_EXCISABLE_PRODUCT}    xpath=//*[@id="state-modal"]/div[2]/div[2]/div/form/ng-include[1]/div/div[5]/div/label
+${CHECKBOX_WEIGHT_GOODS}    xpath=//*[@id="state-modal"]/div[2]/div[2]/div/form/ng-include[1]/div/div[8]/div[2]
 
 *** Keywords ***
 Get Env Credentials

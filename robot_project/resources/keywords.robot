@@ -20,7 +20,8 @@ User Is Logged In
     Input Text    ${LOGIN_INPUT}    ${USERNAME}
     Input Text    ${PASSWORD_INPUT}    ${PASSWORD}
     Click Element    ${LOGIN_BUTTON}
-    Run Keyword And Handle Error    Wait Until Page Contains Element    ${DASHBOARD_ELEMENT}    timeout=10s    Handle Login Failure
+    ${status}=    Run Keyword And Return Status    Wait Until Page Contains Element    ${DASHBOARD_ELEMENT}    timeout=10s
+    Run Keyword If    not ${status}    Handle Login Failure
     Log    Successfully logged in
 
 Handle Login Failure
@@ -32,11 +33,16 @@ User Navigates To Product Page
     Click Element    ${PRODUCT_MENU}
     Wait Until Page Contains Element    ${PAGINATION_ELEMENT}    timeout=15s
 
-Input Product Name
-    [Arguments]    ${name}
+Click Create Product
     Click Element    ${NEW_PRODUCT_BUTTON}
     Wait Until Page Contains Element    ${PRODUCT_MODAL}    timeout=10s
+
+Input Product Name
+    [Arguments]    ${name}
     Input Text    ${INPUT_NAME}    ${name}
+
+Click Generate Barcode
+    Click Element    ${BUTTON_GENERATE_BARCODE}
 
 Input Article
     [Arguments]    ${article}
@@ -48,10 +54,23 @@ Select Marking Type
     Wait Until Element Is Visible    ${MARKING_DROPDOWN_ITEM}    timeout=10s
     Click Element    ${MARKING_DROPDOWN_ITEM}
 
+Select Category
+    Wait Until Element Is Visible    ${CATEGORIES_DROPDOWN}    timeout=10s
+    Click Element    ${CATEGORIES_DROPDOWN}
+    Wait Until Element Is Visible    ${CATEGORIES_DROPDOWN_ITEM}    timeout=10s
+    Click Element    ${CATEGORIES_DROPDOWN_ITEM}
+
 Input Purchase Price
     [Arguments]    ${price}
     Input Text    ${INPUT_PURCHASE}    ${price}
 
+Toggle Checkbox
+    [Arguments]    @{checkbox_locators}
+    FOR    ${checkbox_locator}    IN    @{checkbox_locators}
+        Click Element    ${checkbox_locator}
+    END
+
 Save Product
-    Wait Until Element Is Visible    ${SAVE_BUTTON}    timeout=10s
-    Click Element    ${SAVE_BUTTON}
+    Wait Until Element Is Visible    ${BUTTON_SAVE_PRODUCT}    timeout=10s
+    Click Element    ${BUTTON_SAVE_PRODUCT}
+

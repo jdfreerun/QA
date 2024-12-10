@@ -18,8 +18,12 @@ Create Product Successfully
 *** Keywords ***
 User Creates New Product
     [Arguments]    ${name}    ${article}    ${purchase_price}
+    Click Create Product
     Input Product Name    ${name}
+    Click Generate Barcode
     Input Article    ${article}
     Select Marking Type
+    Select Category
     Input Purchase Price    ${purchase_price}
+    Toggle Checkbox    ${CHECKBOX_EXCISABLE_PRODUCT}    ${CHECKBOX_WEIGHT_GOODS}
     Save Product
