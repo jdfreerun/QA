@@ -1,7 +1,7 @@
 *** Settings ***
 Documentation    Test suite for product creation in Ainur application
 Resource         ../resources/keywords.robot
-Suite Setup      Open Ainur Application
+Suite Setup      Open Stage Application
 Suite Teardown   Close All Browsers
 
 *** Test Cases ***
@@ -23,7 +23,7 @@ User Creates New Product
     Click Generate Barcode
     Input Article    ${article}
     Select Marking Type
-    Select Category
+    # Select Category
     Input Purchase Price    ${purchase_price}
     Toggle Checkbox    ${CHECKBOX_EXCISABLE_PRODUCT}    ${CHECKBOX_WEIGHT_GOODS}
     Save Product

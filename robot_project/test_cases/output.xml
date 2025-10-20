@@ -1,181 +1,210 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<robot generator="Robot 7.1 (Python 3.12.7 on darwin)" generated="2024-12-10T15:26:26.920304" rpa="false" schemaversion="5">
-<suite id="s1" name="Simple Test" source="/Users/albertfayzullin/Documents/QA/robot_project/test_cases/simple_test.robot">
-<kw name="Open Ainur Application" owner="keywords" type="SETUP">
-<kw name="Get Env Credentials" owner="variables">
+<robot generator="Robot 7.3.2 (Python 3.9.6 on darwin)" generated="2025-10-20T16:38:00.249692" rpa="false" schemaversion="5">
+<suite id="s1" name="Simple Test" source="/Users/albertfayzullin/QA/robot_project/test_cases/simple_test.robot">
+<kw name="Open Stage Application" owner="keywords" type="SETUP">
+<kw name="Get Env Credentials" owner="keywords">
 <kw name="Get File" owner="OperatingSystem">
-<msg time="2024-12-10T15:26:27.312032" level="INFO" html="true">Getting file '&lt;a href="file:///Users/albertfayzullin/Documents/QA/robot_project/config/.env"&gt;/Users/albertfayzullin/Documents/QA/robot_project/config/.env&lt;/a&gt;'.</msg>
-<msg time="2024-12-10T15:26:27.312992" level="INFO">${env_file} = USERNAME=albert.f@ainur.app
-PASSWORD=jd12061995
-</msg>
+<msg time="2025-10-20T16:38:00.351991" level="INFO" html="true">Getting file '&lt;a href="file:///Users/albertfayzullin/QA/robot_project/config/.env"&gt;/Users/albertfayzullin/QA/robot_project/config/.env&lt;/a&gt;'.</msg>
+<msg time="2025-10-20T16:38:00.352230" level="INFO">${env_file} = USERNAME=robot@cloudshop.ru
+PASSWORD=Jd12061995!!hh</msg>
 <var>${env_file}</var>
-<arg>/Users/albertfayzullin/Documents/QA/robot_project/resources/../config/.env</arg>
+<arg>/Users/albertfayzullin/QA/robot_project/resources/../config/.env</arg>
 <doc>Returns the contents of a specified file.</doc>
-<status status="PASS" start="2024-12-10T15:26:27.311872" elapsed="0.001213"/>
+<status status="PASS" start="2025-10-20T16:38:00.351928" elapsed="0.000316"/>
 </kw>
 <kw name="Split To Lines" owner="String">
-<msg time="2024-12-10T15:26:27.313895" level="INFO">2 lines returned</msg>
-<msg time="2024-12-10T15:26:27.314084" level="INFO">@{lines} = [ USERNAME=albert.f@ainur.app | PASSWORD=jd12061995 ]</msg>
+<msg time="2025-10-20T16:38:00.352370" level="INFO">2 lines returned.</msg>
+<msg time="2025-10-20T16:38:00.352411" level="INFO">@{lines} = [ USERNAME=robot@cloudshop.ru | PASSWORD=Jd12061995!!hh ]</msg>
 <var>@{lines}</var>
 <arg>${env_file}</arg>
 <doc>Splits the given string to lines.</doc>
-<status status="PASS" start="2024-12-10T15:26:27.313562" elapsed="0.000596"/>
+<status status="PASS" start="2025-10-20T16:38:00.352310" elapsed="0.000112"/>
 </kw>
 <for flavor="IN">
 <iter>
 <kw name="Split String" owner="String">
-<msg time="2024-12-10T15:26:27.315594" level="INFO">${key} = USERNAME</msg>
-<msg time="2024-12-10T15:26:27.316013" level="INFO">${value} = albert.f@ainur.app</msg>
+<msg time="2025-10-20T16:38:00.352644" level="INFO">${key} = USERNAME</msg>
+<msg time="2025-10-20T16:38:00.352663" level="INFO">${value} = robot@cloudshop.ru</msg>
 <var>${key}</var>
 <var>${value}</var>
 <arg>${line}</arg>
 <arg>=</arg>
 <doc>Splits the ``string`` using ``separator`` as a delimiter string.</doc>
-<status status="PASS" start="2024-12-10T15:26:27.315060" elapsed="0.001126"/>
+<status status="PASS" start="2025-10-20T16:38:00.352560" elapsed="0.000113"/>
 </kw>
 <kw name="Set Suite Variable" owner="BuiltIn">
-<msg time="2024-12-10T15:26:27.323788" level="INFO">${USERNAME} = albert.f@ainur.app</msg>
+<msg time="2025-10-20T16:38:00.353143" level="INFO">${USERNAME} = robot@cloudshop.ru</msg>
 <arg>${${key}}</arg>
 <arg>${value}</arg>
 <doc>Makes a variable available everywhere within the scope of the current suite.</doc>
-<status status="PASS" start="2024-12-10T15:26:27.317282" elapsed="0.006621"/>
+<status status="PASS" start="2025-10-20T16:38:00.352726" elapsed="0.000438"/>
 </kw>
-<var name="${line}">USERNAME=albert.f@ainur.app</var>
-<status status="PASS" start="2024-12-10T15:26:27.314818" elapsed="0.009209"/>
+<var name="${line}">USERNAME=robot@cloudshop.ru</var>
+<status status="PASS" start="2025-10-20T16:38:00.352519" elapsed="0.000665"/>
 </iter>
 <iter>
 <kw name="Split String" owner="String">
-<msg time="2024-12-10T15:26:27.325013" level="INFO">${key} = PASSWORD</msg>
-<msg time="2024-12-10T15:26:27.325064" level="INFO">${value} = jd12061995</msg>
+<msg time="2025-10-20T16:38:00.353340" level="INFO">${key} = PASSWORD</msg>
+<msg time="2025-10-20T16:38:00.353359" level="INFO">${value} = Jd12061995!!hh</msg>
 <var>${key}</var>
 <var>${value}</var>
 <arg>${line}</arg>
 <arg>=</arg>
 <doc>Splits the ``string`` using ``separator`` as a delimiter string.</doc>
-<status status="PASS" start="2024-12-10T15:26:27.324742" elapsed="0.000349"/>
+<status status="PASS" start="2025-10-20T16:38:00.353263" elapsed="0.000106"/>
 </kw>
 <kw name="Set Suite Variable" owner="BuiltIn">
-<msg time="2024-12-10T15:26:27.326712" level="INFO">${PASSWORD} = jd12061995</msg>
+<msg time="2025-10-20T16:38:00.353785" level="INFO">${PASSWORD} = Jd12061995!!hh</msg>
 <arg>${${key}}</arg>
 <arg>${value}</arg>
 <doc>Makes a variable available everywhere within the scope of the current suite.</doc>
-<status status="PASS" start="2024-12-10T15:26:27.325248" elapsed="0.001761"/>
+<status status="PASS" start="2025-10-20T16:38:00.353419" elapsed="0.000386"/>
 </kw>
-<var name="${line}">PASSWORD=jd12061995</var>
-<status status="PASS" start="2024-12-10T15:26:27.324489" elapsed="0.002676"/>
+<var name="${line}">PASSWORD=Jd12061995!!hh</var>
+<status status="PASS" start="2025-10-20T16:38:00.353225" elapsed="0.000599"/>
 </iter>
 <var>${line}</var>
 <value>@{lines}</value>
-<status status="PASS" start="2024-12-10T15:26:27.314395" elapsed="0.012847"/>
+<status status="PASS" start="2025-10-20T16:38:00.352452" elapsed="0.001389"/>
 </for>
 <kw name="Log" owner="BuiltIn">
-<msg time="2024-12-10T15:26:27.327584" level="INFO">Username: albert.f@ainur.app</msg>
+<msg time="2025-10-20T16:38:00.353956" level="INFO">Username: robot@cloudshop.ru</msg>
 <arg>Username: ${USERNAME}</arg>
 <doc>Logs the given message with the given level.</doc>
-<status status="PASS" start="2024-12-10T15:26:27.327411" elapsed="0.000227"/>
+<status status="PASS" start="2025-10-20T16:38:00.353892" elapsed="0.000085"/>
 </kw>
 <kw name="Log" owner="BuiltIn">
-<msg time="2024-12-10T15:26:27.327883" level="INFO">Password: jd12061995</msg>
+<msg time="2025-10-20T16:38:00.354072" level="INFO">Password: Jd12061995!!hh</msg>
 <arg>Password: ${PASSWORD}</arg>
 <doc>Logs the given message with the given level.</doc>
-<status status="PASS" start="2024-12-10T15:26:27.327754" elapsed="0.000176"/>
+<status status="PASS" start="2025-10-20T16:38:00.354019" elapsed="0.000071"/>
 </kw>
-<status status="PASS" start="2024-12-10T15:26:27.311178" elapsed="0.016843"/>
+<status status="PASS" start="2025-10-20T16:38:00.351619" elapsed="0.002498"/>
 </kw>
 <kw name="Log" owner="BuiltIn">
-<msg time="2024-12-10T15:26:27.328255" level="INFO">Opening browser with URL: https://web.ainur.app/anonymous/login/</msg>
+<msg time="2025-10-20T16:38:00.354221" level="INFO">Opening browser with URL: https://web-stage.cloudshop.ru/anonymous/login/</msg>
 <arg>Opening browser with URL: ${URL}</arg>
 <doc>Logs the given message with the given level.</doc>
-<status status="PASS" start="2024-12-10T15:26:27.328129" elapsed="0.000173"/>
+<status status="PASS" start="2025-10-20T16:38:00.354163" elapsed="0.000078"/>
 </kw>
 <kw name="Open Browser" owner="SeleniumLibrary">
-<msg time="2024-12-10T15:26:27.328663" level="INFO">Opening browser 'chrome' to base url 'https://web.ainur.app/anonymous/login/'.</msg>
+<msg time="2025-10-20T16:38:00.354393" level="INFO">Opening browser 'chrome' to base url 'https://web-stage.cloudshop.ru/anonymous/login/'.</msg>
 <arg>${URL}</arg>
 <arg>${BROWSER}</arg>
 <doc>Opens a new browser instance to the optional ``url``.</doc>
-<status status="PASS" start="2024-12-10T15:26:27.328438" elapsed="4.871806"/>
+<status status="PASS" start="2025-10-20T16:38:00.354297" elapsed="7.472320"/>
 </kw>
 <kw name="Maximize Browser Window" owner="SeleniumLibrary">
 <doc>Maximizes current browser window.</doc>
-<status status="PASS" start="2024-12-10T15:26:32.200741" elapsed="0.856650"/>
+<status status="PASS" start="2025-10-20T16:38:07.826973" elapsed="0.337131"/>
 </kw>
 <kw name="Title Should Be" owner="SeleniumLibrary">
-<msg time="2024-12-10T15:26:33.141758" level="INFO">Page title is 'Sign in'.</msg>
-<arg>Sign in</arg>
+<msg time="2025-10-20T16:38:08.167635" level="INFO">Page title is 'Авторизация'.</msg>
+<arg>Авторизация</arg>
 <doc>Verifies that the current page title equals ``title``.</doc>
-<status status="PASS" start="2024-12-10T15:26:33.057798" elapsed="0.084073"/>
+<status status="PASS" start="2025-10-20T16:38:08.164269" elapsed="0.003444"/>
 </kw>
 <kw name="Log" owner="BuiltIn">
-<msg time="2024-12-10T15:26:33.142262" level="INFO">Browser opened successfully</msg>
+<msg time="2025-10-20T16:38:08.167996" level="INFO">Browser opened successfully</msg>
 <arg>Browser opened successfully</arg>
 <doc>Logs the given message with the given level.</doc>
-<status status="PASS" start="2024-12-10T15:26:33.142084" elapsed="0.000237"/>
+<status status="PASS" start="2025-10-20T16:38:08.167849" elapsed="0.000176"/>
 </kw>
-<status status="PASS" start="2024-12-10T15:26:27.310829" elapsed="5.831630"/>
+<doc>Открытие страницы авторизации</doc>
+<status status="PASS" start="2025-10-20T16:38:00.351471" elapsed="7.816611"/>
 </kw>
 <test id="s1-t1" name="Create Product Successfully" line="8">
 <kw name="Given User Is Logged In" owner="keywords">
 <kw name="Log" owner="BuiltIn">
-<msg time="2024-12-10T15:26:33.144451" level="INFO">Attempting to log in with username: albert.f@ainur.app</msg>
+<msg time="2025-10-20T16:38:08.168985" level="INFO">Attempting to log in with username: robot@cloudshop.ru</msg>
 <arg>Attempting to log in with username: ${USERNAME}</arg>
 <doc>Logs the given message with the given level.</doc>
-<status status="PASS" start="2024-12-10T15:26:33.144271" elapsed="0.000247"/>
+<status status="PASS" start="2025-10-20T16:38:08.168812" elapsed="0.000200"/>
 </kw>
 <kw name="Input Text" owner="SeleniumLibrary">
-<msg time="2024-12-10T15:26:33.145360" level="INFO">Typing text 'albert.f@ainur.app' into text field 'login'.</msg>
+<msg time="2025-10-20T16:38:08.169326" level="INFO">Typing text 'robot@cloudshop.ru' into text field 'login'.</msg>
 <arg>${LOGIN_INPUT}</arg>
 <arg>${USERNAME}</arg>
 <doc>Types the given ``text`` into the text field identified by ``locator``.</doc>
-<status status="PASS" start="2024-12-10T15:26:33.144705" elapsed="0.343489"/>
+<status status="PASS" start="2025-10-20T16:38:08.169080" elapsed="0.088044"/>
 </kw>
 <kw name="Input Text" owner="SeleniumLibrary">
-<msg time="2024-12-10T15:26:33.488759" level="INFO">Typing text 'jd12061995' into text field 'password'.</msg>
+<msg time="2025-10-20T16:38:08.257427" level="INFO">Typing text 'Jd12061995!!hh' into text field 'password'.</msg>
 <arg>${PASSWORD_INPUT}</arg>
 <arg>${PASSWORD}</arg>
 <doc>Types the given ``text`` into the text field identified by ``locator``.</doc>
-<status status="PASS" start="2024-12-10T15:26:33.488463" elapsed="0.151259"/>
+<status status="PASS" start="2025-10-20T16:38:08.257258" elapsed="0.030869"/>
 </kw>
 <kw name="Click Element" owner="SeleniumLibrary">
-<msg time="2024-12-10T15:26:33.640384" level="INFO">Clicking element 'xpath=//BUTTON[@ng-class='{disabled: loading}']'.</msg>
+<msg time="2025-10-20T16:38:08.288457" level="INFO">Clicking element 'xpath=//BUTTON[@ng-class='{disabled: loading}']'.</msg>
 <arg>${LOGIN_BUTTON}</arg>
 <doc>Click the element identified by ``locator``.</doc>
-<status status="PASS" start="2024-12-10T15:26:33.639950" elapsed="0.095579"/>
+<status status="PASS" start="2025-10-20T16:38:08.288289" elapsed="0.027206"/>
 </kw>
-<kw name="Run Keyword And Handle Error">
-<msg time="2024-12-10T15:26:33.739205" level="FAIL">No keyword with name 'Run Keyword And Handle Error' found. Did you try using keyword 'BuiltIn.Run Keyword' or 'OperatingSystem.Run' and forgot to use enough whitespace between keyword and arguments?</msg>
+<kw name="Run Keyword And Return Status" owner="BuiltIn">
+<kw name="Wait Until Page Contains Element" owner="SeleniumLibrary">
+<arg>${DASHBOARD_ELEMENT}</arg>
+<arg>timeout=10s</arg>
+<doc>Waits until the element ``locator`` appears on the current page.</doc>
+<status status="PASS" start="2025-10-20T16:38:08.315887" elapsed="0.862878"/>
+</kw>
+<msg time="2025-10-20T16:38:09.178893" level="INFO">${status} = True</msg>
+<var>${status}</var>
 <arg>Wait Until Page Contains Element</arg>
 <arg>${DASHBOARD_ELEMENT}</arg>
 <arg>timeout=10s</arg>
+<doc>Runs the given keyword with given arguments and returns the status as a Boolean value.</doc>
+<status status="PASS" start="2025-10-20T16:38:08.315746" elapsed="0.863169"/>
+</kw>
+<kw name="Run Keyword If" owner="BuiltIn">
+<arg>not ${status}</arg>
 <arg>Handle Login Failure</arg>
-<status status="FAIL" start="2024-12-10T15:26:33.739112" elapsed="0.000616">No keyword with name 'Run Keyword And Handle Error' found. Did you try using keyword 'BuiltIn.Run Keyword' or 'OperatingSystem.Run' and forgot to use enough whitespace between keyword and arguments?</status>
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<status status="PASS" start="2025-10-20T16:38:09.179061" elapsed="0.000143"/>
 </kw>
 <kw name="Log" owner="BuiltIn">
+<msg time="2025-10-20T16:38:09.179398" level="INFO">Successfully logged in</msg>
 <arg>Successfully logged in</arg>
 <doc>Logs the given message with the given level.</doc>
-<status status="NOT RUN" start="2024-12-10T15:26:33.740138" elapsed="0.000056"/>
+<status status="PASS" start="2025-10-20T16:38:09.179324" elapsed="0.000102"/>
 </kw>
-<status status="FAIL" start="2024-12-10T15:26:33.143918" elapsed="0.596681">No keyword with name 'Run Keyword And Handle Error' found. Did you try using keyword 'BuiltIn.Run Keyword' or 'OperatingSystem.Run' and forgot to use enough whitespace between keyword and arguments?</status>
+<doc>Авторизация пользователя</doc>
+<status status="PASS" start="2025-10-20T16:38:08.168656" elapsed="1.010812"/>
 </kw>
 <kw name="When User Navigates To Product Page" owner="keywords">
-<status status="NOT RUN" start="2024-12-10T15:26:33.741401" elapsed="0.000100"/>
+<kw name="Click Element" owner="SeleniumLibrary">
+<msg time="2025-10-20T16:38:09.179878" level="INFO">Clicking element 'xpath=//*[@id="subMenu"]/div/div[2]/div/div/div[3]/a/span'.</msg>
+<msg time="2025-10-20T16:38:09.345606" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="selenium-screenshot-2.png"&gt;&lt;img src="selenium-screenshot-2.png" width="800px"&gt;&lt;/a&gt;</msg>
+<msg time="2025-10-20T16:38:09.345721" level="FAIL">Element with locator 'xpath=//*[@id="subMenu"]/div/div[2]/div/div/div[3]/a/span' not found.</msg>
+<arg>${PRODUCT_MENU}</arg>
+<doc>Click the element identified by ``locator``.</doc>
+<status status="FAIL" start="2025-10-20T16:38:09.179754" elapsed="0.171040">Element with locator 'xpath=//*[@id="subMenu"]/div/div[2]/div/div/div[3]/a/span' not found.</status>
+</kw>
+<kw name="Wait Until Page Contains Element" owner="SeleniumLibrary">
+<arg>${PAGINATION_ELEMENT}</arg>
+<arg>timeout=15s</arg>
+<doc>Waits until the element ``locator`` appears on the current page.</doc>
+<status status="NOT RUN" start="2025-10-20T16:38:09.350922" elapsed="0.000023"/>
+</kw>
+<status status="FAIL" start="2025-10-20T16:38:09.179606" elapsed="0.171402">Element with locator 'xpath=//*[@id="subMenu"]/div/div[2]/div/div/div[3]/a/span' not found.</status>
 </kw>
 <kw name="And User Creates New Product">
 <arg>name=AinurAutoTest</arg>
 <arg>article=1027514</arg>
 <arg>purchase_price=450.5</arg>
-<status status="NOT RUN" start="2024-12-10T15:26:33.741970" elapsed="0.000048"/>
+<status status="NOT RUN" start="2025-10-20T16:38:09.351162" elapsed="0.000020"/>
 </kw>
 <doc>Verify successful product creation in Ainur</doc>
 <tag>product</tag>
 <tag>regression</tag>
-<status status="FAIL" start="2024-12-10T15:26:33.142664" elapsed="0.599934">No keyword with name 'Run Keyword And Handle Error' found. Did you try using keyword 'BuiltIn.Run Keyword' or 'OperatingSystem.Run' and forgot to use enough whitespace between keyword and arguments?</status>
+<status status="FAIL" start="2025-10-20T16:38:08.168185" elapsed="1.183097">Element with locator 'xpath=//*[@id="subMenu"]/div/div[2]/div/div/div[3]/a/span' not found.</status>
 </test>
 <kw name="Close All Browsers" owner="SeleniumLibrary" type="TEARDOWN">
 <doc>Closes all open browsers and resets the browser cache.</doc>
-<status status="PASS" start="2024-12-10T15:26:33.744117" elapsed="0.244114"/>
+<status status="PASS" start="2025-10-20T16:38:09.351539" elapsed="1.719078"/>
 </kw>
 <doc>Test suite for product creation in Ainur application</doc>
-<status status="FAIL" start="2024-12-10T15:26:26.921955" elapsed="7.066394"/>
+<status status="FAIL" start="2025-10-20T16:38:00.250215" elapsed="10.820658"/>
 </suite>
 <statistics>
 <total>
@@ -186,7 +215,7 @@ PASSWORD=jd12061995
 <stat pass="0" fail="1" skip="0">regression</stat>
 </tag>
 <suite>
-<stat pass="0" fail="1" skip="0" id="s1" name="Simple Test">Simple Test</stat>
+<stat name="Simple Test" id="s1" pass="0" fail="1" skip="0">Simple Test</stat>
 </suite>
 </statistics>
 <errors>

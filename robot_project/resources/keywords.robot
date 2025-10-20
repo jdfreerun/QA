@@ -1,5 +1,5 @@
 *** Settings ***
-Documentation    Keywords for Ainur application interactions
+Documentation    Ключевые слова для теста Stage CloudShop
 Library          SeleniumLibrary
 Resource         variables.robot
 
@@ -7,15 +7,17 @@ Resource         variables.robot
 ${ENV_FILE}    ./config/.env
 
 *** Keywords ***
-Open Ainur Application
+Open Stage Application
+    [Documentation]    Открытие страницы авторизации
     Get Env Credentials
     Log    Opening browser with URL: ${URL}
     Open Browser    ${URL}    ${BROWSER}
     Maximize Browser Window
-    Title Should Be    Sign in
+    Title Should Be    Авторизация
     Log    Browser opened successfully
 
 User Is Logged In
+    [Documentation]    Авторизация пользователя
     Log    Attempting to log in with username: ${USERNAME}
     Input Text    ${LOGIN_INPUT}    ${USERNAME}
     Input Text    ${PASSWORD_INPUT}    ${PASSWORD}
@@ -39,7 +41,7 @@ Click Create Product
 
 Input Product Name
     [Arguments]    ${name}
-    Input Text    ${INPUT_NAME}    ${name}
+    Input Text    ${INPUT_NAME}    ${name}  timeout=20s
 
 Click Generate Barcode
     Click Element    ${BUTTON_GENERATE_BARCODE}
@@ -74,3 +76,12 @@ Save Product
     Wait Until Element Is Visible    ${BUTTON_SAVE_PRODUCT}    timeout=10s
     Click Element    ${BUTTON_SAVE_PRODUCT}
 
+Get Env Credentials
+    ${env_file}=    Get File    ${CURDIR}/../config/.env
+    @{lines}=    Split To Lines    ${env_file}
+    FOR    ${line}    IN    @{lines}
+        ${key}    ${value}=    Split String    ${line}    =
+        Set Suite Variable    ${${key}}    ${value}
+    END
+    Log    Username: ${USERNAME}
+    Log    Password: ${PASSWORD}
