@@ -1,0 +1,10 @@
+.env
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+screenshot*.png
+debug*.png
+*.log
+*.html
+output.xml
