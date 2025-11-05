@@ -1,0 +1,4 @@
+"""
+Fixtures для тестов CloudShop
+"""
+
