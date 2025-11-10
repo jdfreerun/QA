@@ -1,16 +1,30 @@
-# Playwright Python Project
+# Playwright Python Project — CloudShop Automation
 
-Проект для автоматизации тестирования на Playwright с использованием Python и pytest.
+Проект для автоматизации тестирования CloudShop на Playwright с использованием Python и pytest.
 
 ## Структура проекта
 
 ```
 playwright_project/
-├── tests/
-│   └── test_cloudshop.py    # Тесты
-├── requirements.txt          # Зависимости проекта
+├── pages/                    # Page Object Model
+│   ├── base_page.py         # Базовый класс
+│   ├── login_page.py        # Страница авторизации
+│   └── products_page.py     # Страница товаров
+├── utils/                    # Утилиты
+│   └── data_generator.py    # Генератор тестовых данных
+├── tests/                    # Тесты
+│   ├── auth/                # Тесты авторизации
+│   │   └── test_login.py
+│   └── products/            # Тесты товаров
+│       ├── test_product_crud.py
+│       └── test_product_extended.py
+├── config/                   # Конфигурация
+├── data/                     # Тестовые данные
+├── conftest.py              # Глобальные fixtures
 ├── pytest.ini               # Конфигурация pytest
-└── README.md                # Документация
+├── requirements.txt          # Зависимости
+├── .env                      # Учетные данные (не в git)
+└── .gitignore               # Игнорируемые файлы
 ```
 
 ## Установка
@@ -33,42 +47,74 @@ playwright install
 
 ## Запуск тестов
 
-Запуск всех тестов:
 ```bash
-pytest
-```
-
-Запуск конкретного теста:
-```bash
-pytest tests/test_cloudshop.py
-```
-
-Запуск с подробным выводом:
-```bash
+# Все тесты
 pytest -v
+
+# Только smoke тесты (критические)
+pytest -m smoke -v
+
+# Только тесты товаров
+pytest -m products -v
+
+# Только тесты авторизации
+pytest -m auth -v
+
+# Критические тесты (P0)
+pytest -m P0 -v
+
+# Конкретный модуль
+pytest tests/products/ -v
+
+# С подробным выводом
+pytest -v -s
+
+# Параллельный запуск (требует pytest-xdist)
+pip install pytest-xdist
+pytest -n 4 -v
 ```
 
-Запуск с HTML отчетом:
-```bash
-pytest --html=report.html --self-contained-html
-```
+## Реализованные тесты
 
-## Тесты
+### Модуль: Авторизация (4 теста)
+- **test_login_success** — успешная авторизация
+- **test_login_invalid_password** — неверный пароль
+- **test_login_empty_fields** — валидация пустых полей
+- **test_logout** — выход из системы
 
-### test_open_cloudshop_page
-Проверяет открытие главной страницы cloudshop.ru и проверяет основные элементы.
+### Модуль: Товары — базовые операции (6 тестов)
+- **test_create_product_with_all_fields** — создание с основными полями
+- **test_create_product_minimal_fields** — создание с минимумом полей
+- **test_search_product** — проверка отображения в списке
+- **test_create_product_different_barcodes[8/13/14]** — вариации штрих-кодов
 
-### test_login_and_create_product
-Полный E2E тест для работы с товарами в CloudShop:
-1. Авторизация на web.cloudshop.ru
-2. Переход в раздел "Товары и услуги"
-3. Создание нового товара с заполнением всех полей
-4. Сохранение товара
-5. Проверка успешного создания
+### Модуль: Товары — расширенные поля (4 теста)
+- **test_create_product_with_extended_fields** — все поля (dropdown, цены, габариты)
+- **test_create_product_with_dimensions** — габариты и вес
+- **test_create_product_with_pricing** — ценообразование
+- **test_create_product_with_min_stock** — минимальный остаток
 
-**Требования:**
-- Создайте файл `.env` в корне проекта с учетными данными:
-```
+**Всего**: 14 автотестов
+
+## Покрытие полей товара
+
+### ✅ Полностью реализовано:
+- Наименование, штрих-код, артикул
+- Единица измерения (searchable dropdown)
+- Описание
+- Страна (searchable dropdown)
+- Цены: закупка, наценка, продажа
+- Габариты: высота, ширина, глубина
+- Вес
+- Минимальный остаток
+- Код налога (searchable dropdown)
+
+## Настройка
+
+### Требования
+- Python 3.8+
+- Создайте файл `.env` в корне проекта:
+```env
 CLOUDSHOP_EMAIL=your_email@example.com
 CLOUDSHOP_PASSWORD=your_password
 ```

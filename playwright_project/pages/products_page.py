@@ -11,7 +11,7 @@ class ProductsPage(BasePage):
     
     # Локаторы
     CREATE_BUTTON = 'a:has-text("Создать товар"), button:has-text("Создать товар")'
-    SEARCH_INPUT = 'input[type="search"]'
+    SEARCH_INPUT = 'input[type="text"][placeholder*="поиск"], input[type="text"]:first-child, input.search'
     CLOSE_BANNER_BUTTON = 'text="Закрыть", button:has-text("Закрыть"), a:has-text("Закрыть")'
     
     # Локаторы модального окна создания
@@ -20,7 +20,7 @@ class ProductsPage(BasePage):
     MODAL_BARCODE_INPUT = 'input[placeholder="Введите штрих-код"]'
     MODAL_ARTICLE_INPUT = 'input[placeholder="Введите артикул"]'
     MODAL_PRICE_INPUT = 'input[type="number"]'
-    MODAL_DESCRIPTION_TEXTAREA = 'textarea'
+    MODAL_DESCRIPTION_TEXTAREA = 'input[placeholder="Описание"]'
     SAVE_BUTTON = '.cs.sidebar a.ui.button.green:has-text("Сохранить"), [ui-view="modal"] a.ui.button.green:has-text("Сохранить")'
     
     def __init__(self, page: Page):
@@ -55,16 +55,32 @@ class ProductsPage(BasePage):
             pass
     
     def fill_product_form(self, name: str, barcode: str = None, article: str = None, 
-                         price: int = None, description: str = None):
+                         price: int = None, description: str = None, 
+                         unit: str = None, category: str = None, country: str = None,
+                         purchase_price: int = None, markup: int = None,
+                         weight: float = None, height: float = None, 
+                         width: float = None, depth: float = None,
+                         min_stock: int = None, tax_code: str = None):
         """
-        Заполнение формы создания товара
+        Заполнение формы создания товара (расширенная версия)
         
         Args:
             name: Название товара (обязательное)
             barcode: Штрих-код
             article: Артикул
-            price: Цена
+            price: Цена продажи
             description: Описание
+            unit: Единица измерения
+            category: Категория
+            country: Страна
+            purchase_price: Цена закупки
+            markup: Наценка (%)
+            weight: Вес в кг
+            height: Высота в см
+            width: Ширина в см
+            depth: Глубина в см
+            min_stock: Минимальный остаток
+            tax_code: Код налога
         """
         # Кликаем по модальному окну для фокуса
         modal = self.page.locator(self.MODAL_SELECTOR).first
@@ -76,6 +92,7 @@ class ProductsPage(BasePage):
         all_text_inputs = self.page.locator(self.MODAL_NAME_INPUT)
         if all_text_inputs.count() > 1:
             all_text_inputs.nth(1).fill(name)
+            print(f"  ✓ Наименование: {name}")
         
         # Штрих-код
         if barcode:
@@ -83,6 +100,7 @@ class ProductsPage(BasePage):
                 barcode_input = self.page.locator(self.MODAL_BARCODE_INPUT)
                 if barcode_input.is_visible() and not barcode_input.is_disabled():
                     barcode_input.fill(barcode)
+                    print(f"  ✓ Штрих-код: {barcode}")
             except:
                 pass
         
@@ -92,21 +110,82 @@ class ProductsPage(BasePage):
                 article_input = self.page.locator(self.MODAL_ARTICLE_INPUT)
                 if article_input.is_visible() and not article_input.is_disabled():
                     article_input.fill(article)
+                    print(f"  ✓ Артикул: {article}")
             except:
                 pass
         
-        # Цена
-        if price:
+        # Прокручиваем модальное окно к полю "Единица измерения"
+        self.page.evaluate("""
+            () => {
+                const modal = document.querySelector('.cs.sidebar, [ui-view="modal"]');
+                const labels = modal ? modal.querySelectorAll('label') : [];
+                for (let label of labels) {
+                    if (label.innerText.includes('Единица измерения')) {
+                        const field = label.closest('.field');
+                        if (field) {
+                            field.scrollIntoView({block: 'center'});
+                            break;
+                        }
+                    }
+                }
+            }
+        """)
+        self.wait_for_load(1000)
+        
+        # Единица измерения (searchable dropdown)
+        if unit:
             try:
-                price_inputs = self.page.locator(self.MODAL_PRICE_INPUT)
-                if price_inputs.count() > 0:
-                    for i in range(min(3, price_inputs.count())):
-                        price_inp = price_inputs.nth(i)
-                        if price_inp.is_visible() and not price_inp.is_disabled():
-                            price_inp.fill(str(price))
-                            break
-            except:
-                pass
+                # Полностью через JavaScript
+                result = self.page.evaluate(f"""
+                    (unitValue) => {{
+                        const modal = document.querySelector('.cs.sidebar, [ui-view="modal"]');
+                        const labels = modal ? modal.querySelectorAll('label') : [];
+                        
+                        for (let label of labels) {{
+                            if (label.innerText.includes('Единица измерения')) {{
+                                const field = label.closest('.field');
+                                field.scrollIntoView({{block: 'center'}});
+                                
+                                const dropdown = field.querySelector('.ui.dropdown');
+                                if (dropdown) {{
+                                    // Кликаем по dropdown
+                                    dropdown.click();
+                                    
+                                    // Ждем и заполняем input
+                                    setTimeout(() => {{
+                                        const input = field.querySelector('input[type="text"]');
+                                        if (input) {{
+                                            input.value = unitValue;
+                                            input.dispatchEvent(new Event('input', {{ bubbles: true }}));
+                                            
+                                            // Нажимаем Enter
+                                            setTimeout(() => {{
+                                                const enterEvent = new KeyboardEvent('keydown', {{
+                                                    key: 'Enter',
+                                                    code: 'Enter',
+                                                    keyCode: 13,
+                                                    bubbles: true
+                                                }});
+                                                input.dispatchEvent(enterEvent);
+                                            }}, 300);
+                                        }}
+                                    }}, 500);
+                                    
+                                    return true;
+                                }}
+                            }}
+                        }}
+                        return false;
+                    }}
+                """, unit)
+                
+                self.wait_for_load(1500)
+                if result:
+                    print(f"  ✓ Единица измерения: {unit}")
+                else:
+                    print(f"  ⚠ Единица измерения: не заполнена")
+            except Exception as e:
+                print(f"  ⚠ Единица измерения ошибка: {e}")
         
         # Описание
         if description:
@@ -114,8 +193,217 @@ class ProductsPage(BasePage):
                 desc_textarea = self.page.locator(self.MODAL_DESCRIPTION_TEXTAREA)
                 if desc_textarea.is_visible() and not desc_textarea.is_disabled():
                     desc_textarea.fill(description)
+                    print(f"  ✓ Описание заполнено")
             except:
                 pass
+        
+        # Страна (searchable dropdown)
+        if country:
+            try:
+                # Полностью через JavaScript
+                result = self.page.evaluate(f"""
+                    (countryValue) => {{
+                        const modal = document.querySelector('.cs.sidebar, [ui-view="modal"]');
+                        const labels = modal ? modal.querySelectorAll('label') : [];
+                        
+                        for (let label of labels) {{
+                            if (label.innerText.includes('Страна')) {{
+                                const field = label.closest('.field');
+                                field.scrollIntoView({{block: 'center'}});
+                                
+                                const dropdown = field.querySelector('.ui.dropdown');
+                                if (dropdown) {{
+                                    dropdown.click();
+                                    
+                                    setTimeout(() => {{
+                                        const input = field.querySelector('input[type="text"]');
+                                        if (input) {{
+                                            input.value = countryValue;
+                                            input.dispatchEvent(new Event('input', {{ bubbles: true }}));
+                                            
+                                            setTimeout(() => {{
+                                                const enterEvent = new KeyboardEvent('keydown', {{
+                                                    key: 'Enter',
+                                                    code: 'Enter',
+                                                    keyCode: 13,
+                                                    bubbles: true
+                                                }});
+                                                input.dispatchEvent(enterEvent);
+                                            }}, 300);
+                                        }}
+                                    }}, 500);
+                                    
+                                    return true;
+                                }}
+                            }}
+                        }}
+                        return false;
+                    }}
+                """, country)
+                
+                self.wait_for_load(1500)
+                if result:
+                    print(f"  ✓ Страна: {country}")
+                else:
+                    print(f"  ⚠ Страна: не заполнена")
+            except Exception as e:
+                print(f"  ⚠ Страна ошибка: {e}")
+        
+        # Прокручиваем еще ниже для цен
+        self.page.evaluate("""
+            () => {
+                const modal = document.querySelector('.cs.sidebar, [ui-view="modal"]');
+                if (modal) {
+                    modal.scrollTop = modal.scrollHeight;
+                }
+            }
+        """)
+        self.wait_for_load(500)
+        
+        # Цена закупки
+        if purchase_price:
+            try:
+                purchase_input = self.page.locator('.field:has-text("Цена закупки") input[type="number"]').first
+                if purchase_input.count() > 0:
+                    purchase_input.scroll_into_view_if_needed()
+                    self.wait_for_load(300)
+                    purchase_input.fill(str(purchase_price))
+                    print(f"  ✓ Цена закупки: {purchase_price}")
+            except Exception as e:
+                print(f"  ⚠ Цена закупки не заполнена: {e}")
+        
+        # Наценка
+        if markup:
+            try:
+                markup_input = self.page.locator('.field:has-text("Наценка") input[type="number"]').first
+                if markup_input.count() > 0:
+                    markup_input.scroll_into_view_if_needed()
+                    self.wait_for_load(300)
+                    markup_input.fill(str(markup))
+                    print(f"  ✓ Наценка: {markup}%")
+            except Exception as e:
+                print(f"  ⚠ Наценка не заполнена: {e}")
+        
+        # Цена продажи
+        if price:
+            try:
+                price_input = self.page.locator('.field:has-text("Цена продажи") input[type="number"]').first
+                if price_input.count() > 0:
+                    price_input.scroll_into_view_if_needed()
+                    self.wait_for_load(300)
+                    price_input.fill(str(price))
+                    print(f"  ✓ Цена продажи: {price}")
+            except Exception as e:
+                print(f"  ⚠ Цена продажи не заполнена: {e}")
+        
+        # Размеры (если указаны)
+        if height:
+            try:
+                height_input = self.page.locator('.field:has-text("Высота") input[type="number"]').first
+                if height_input.count() > 0:
+                    height_input.scroll_into_view_if_needed()
+                    self.wait_for_load(300)
+                    height_input.fill(str(height))
+                    print(f"  ✓ Высота: {height} см")
+            except Exception as e:
+                print(f"  ⚠ Высота не заполнена: {e}")
+        
+        if width:
+            try:
+                width_input = self.page.locator('.field:has-text("Ширина") input[type="number"]').first
+                if width_input.count() > 0:
+                    width_input.scroll_into_view_if_needed()
+                    self.wait_for_load(300)
+                    width_input.fill(str(width))
+                    print(f"  ✓ Ширина: {width} см")
+            except Exception as e:
+                print(f"  ⚠ Ширина не заполнена: {e}")
+        
+        if depth:
+            try:
+                depth_input = self.page.locator('.field:has-text("Глубина") input[type="number"]').first
+                if depth_input.count() > 0:
+                    depth_input.scroll_into_view_if_needed()
+                    self.wait_for_load(300)
+                    depth_input.fill(str(depth))
+                    print(f"  ✓ Глубина: {depth} см")
+            except Exception as e:
+                print(f"  ⚠ Глубина не заполнена: {e}")
+        
+        if weight:
+            try:
+                weight_input = self.page.locator('.field:has-text("вес") input[type="number"]').first
+                if weight_input.count() > 0:
+                    weight_input.scroll_into_view_if_needed()
+                    self.wait_for_load(300)
+                    weight_input.fill(str(weight))
+                    print(f"  ✓ Вес: {weight} кг")
+            except Exception as e:
+                print(f"  ⚠ Вес не заполнен: {e}")
+        
+        # Минимальный остаток
+        if min_stock:
+            try:
+                min_stock_input = self.page.locator('.field:has-text("Минимальный остаток") input[type="number"]').first
+                if min_stock_input.count() > 0:
+                    min_stock_input.scroll_into_view_if_needed()
+                    self.wait_for_load(300)
+                    min_stock_input.fill(str(min_stock))
+                    print(f"  ✓ Минимальный остаток: {min_stock}")
+            except Exception as e:
+                print(f"  ⚠ Минимальный остаток не заполнен: {e}")
+        
+        # Код налога (searchable dropdown)
+        if tax_code:
+            try:
+                # Полностью через JavaScript
+                result = self.page.evaluate(f"""
+                    (taxValue) => {{
+                        const modal = document.querySelector('.cs.sidebar, [ui-view="modal"]');
+                        const labels = modal ? modal.querySelectorAll('label') : [];
+                        
+                        for (let label of labels) {{
+                            if (label.innerText.includes('Код налога')) {{
+                                const field = label.closest('.field');
+                                field.scrollIntoView({{block: 'center'}});
+                                
+                                const dropdown = field.querySelector('.ui.dropdown');
+                                if (dropdown) {{
+                                    dropdown.click();
+                                    
+                                    setTimeout(() => {{
+                                        const input = field.querySelector('input[type="text"]');
+                                        if (input) {{
+                                            input.value = taxValue;
+                                            input.dispatchEvent(new Event('input', {{ bubbles: true }}));
+                                            
+                                            setTimeout(() => {{
+                                                const enterEvent = new KeyboardEvent('keydown', {{
+                                                    key: 'Enter',
+                                                    code: 'Enter',
+                                                    keyCode: 13,
+                                                    bubbles: true
+                                                }});
+                                                input.dispatchEvent(enterEvent);
+                                            }}, 300);
+                                        }}
+                                    }}, 500);
+                                    
+                                    return true;
+                                }}
+                            }}
+                        }}
+                        return false;
+                    }}
+                """, tax_code)
+                
+                self.wait_for_load(1500)
+                if result:
+                    print(f"  ✓ Код налога: {tax_code}")
+                else:
+                    print(f"  ⚠ Код налога: не заполнен")
+            except Exception as e:
+                print(f"  ⚠ Код налога ошибка: {e}")
         
         self.wait_for_load(1000)
     

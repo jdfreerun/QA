@@ -39,20 +39,40 @@ class TestDataGenerator:
         return random.randint(100, 50000)
     
     @staticmethod
-    def generate_product_data() -> dict:
+    def generate_product_data(full: bool = False) -> dict:
         """
         Генерация полного набора данных для товара
+        
+        Args:
+            full: Если True, генерирует все возможные поля
         
         Returns:
             dict: Словарь с данными товара
         """
-        return {
+        base_data = {
             "name": TestDataGenerator.generate_product_name(),
             "barcode": TestDataGenerator.generate_barcode(),
             "article": TestDataGenerator.generate_article(),
             "price": TestDataGenerator.generate_price(),
             "description": f"Автоматически сгенерированное описание для тестового товара {datetime.now()}"
         }
+        
+        if full:
+            base_data.update({
+                "unit": random.choice(["шт", "кг", "л", "м", "упак"]),
+                "category": random.choice(["Электроника", "Продукты", "Одежда", "Товары для дома"]),
+                "country": random.choice(["Россия", "Китай", "США", "Германия"]),
+                "purchase_price": random.randint(50, 500),
+                "markup": random.randint(10, 100),
+                "weight": round(random.uniform(0.1, 50.0), 2),
+                "height": round(random.uniform(1, 100), 1),
+                "width": round(random.uniform(1, 100), 1),
+                "depth": round(random.uniform(1, 100), 1),
+                "min_stock": random.randint(1, 10),
+                "tax_code": str(random.randint(1000, 9999))
+            })
+        
+        return base_data
     
     @staticmethod
     def generate_email() -> str:
