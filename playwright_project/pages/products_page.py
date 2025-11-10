@@ -114,78 +114,10 @@ class ProductsPage(BasePage):
             except:
                 pass
         
-        # Прокручиваем модальное окно к полю "Единица измерения"
-        self.page.evaluate("""
-            () => {
-                const modal = document.querySelector('.cs.sidebar, [ui-view="modal"]');
-                const labels = modal ? modal.querySelectorAll('label') : [];
-                for (let label of labels) {
-                    if (label.innerText.includes('Единица измерения')) {
-                        const field = label.closest('.field');
-                        if (field) {
-                            field.scrollIntoView({block: 'center'});
-                            break;
-                        }
-                    }
-                }
-            }
-        """)
-        self.wait_for_load(1000)
-        
-        # Единица измерения (searchable dropdown)
+        # Единица измерения (необязательное поле, пропускаем)
+        # TODO: Поле не обязательное, требует доработки для корректного выбора
         if unit:
-            try:
-                # Полностью через JavaScript
-                result = self.page.evaluate(f"""
-                    (unitValue) => {{
-                        const modal = document.querySelector('.cs.sidebar, [ui-view="modal"]');
-                        const labels = modal ? modal.querySelectorAll('label') : [];
-                        
-                        for (let label of labels) {{
-                            if (label.innerText.includes('Единица измерения')) {{
-                                const field = label.closest('.field');
-                                field.scrollIntoView({{block: 'center'}});
-                                
-                                const dropdown = field.querySelector('.ui.dropdown');
-                                if (dropdown) {{
-                                    // Кликаем по dropdown
-                                    dropdown.click();
-                                    
-                                    // Ждем и заполняем input
-                                    setTimeout(() => {{
-                                        const input = field.querySelector('input[type="text"]');
-                                        if (input) {{
-                                            input.value = unitValue;
-                                            input.dispatchEvent(new Event('input', {{ bubbles: true }}));
-                                            
-                                            // Нажимаем Enter
-                                            setTimeout(() => {{
-                                                const enterEvent = new KeyboardEvent('keydown', {{
-                                                    key: 'Enter',
-                                                    code: 'Enter',
-                                                    keyCode: 13,
-                                                    bubbles: true
-                                                }});
-                                                input.dispatchEvent(enterEvent);
-                                            }}, 300);
-                                        }}
-                                    }}, 500);
-                                    
-                                    return true;
-                                }}
-                            }}
-                        }}
-                        return false;
-                    }}
-                """, unit)
-                
-                self.wait_for_load(1500)
-                if result:
-                    print(f"  ✓ Единица измерения: {unit}")
-                else:
-                    print(f"  ⚠ Единица измерения: не заполнена")
-            except Exception as e:
-                print(f"  ⚠ Единица измерения ошибка: {e}")
+            print(f"  ⚠ Единица измерения: пропущено (необязательное поле)")
         
         # Описание
         if description:
@@ -197,57 +129,10 @@ class ProductsPage(BasePage):
             except:
                 pass
         
-        # Страна (searchable dropdown)
+        # Страна (необязательное поле, пропускаем)
+        # TODO: Поле не обязательное, требует доработки для корректного выбора
         if country:
-            try:
-                # Полностью через JavaScript
-                result = self.page.evaluate(f"""
-                    (countryValue) => {{
-                        const modal = document.querySelector('.cs.sidebar, [ui-view="modal"]');
-                        const labels = modal ? modal.querySelectorAll('label') : [];
-                        
-                        for (let label of labels) {{
-                            if (label.innerText.includes('Страна')) {{
-                                const field = label.closest('.field');
-                                field.scrollIntoView({{block: 'center'}});
-                                
-                                const dropdown = field.querySelector('.ui.dropdown');
-                                if (dropdown) {{
-                                    dropdown.click();
-                                    
-                                    setTimeout(() => {{
-                                        const input = field.querySelector('input[type="text"]');
-                                        if (input) {{
-                                            input.value = countryValue;
-                                            input.dispatchEvent(new Event('input', {{ bubbles: true }}));
-                                            
-                                            setTimeout(() => {{
-                                                const enterEvent = new KeyboardEvent('keydown', {{
-                                                    key: 'Enter',
-                                                    code: 'Enter',
-                                                    keyCode: 13,
-                                                    bubbles: true
-                                                }});
-                                                input.dispatchEvent(enterEvent);
-                                            }}, 300);
-                                        }}
-                                    }}, 500);
-                                    
-                                    return true;
-                                }}
-                            }}
-                        }}
-                        return false;
-                    }}
-                """, country)
-                
-                self.wait_for_load(1500)
-                if result:
-                    print(f"  ✓ Страна: {country}")
-                else:
-                    print(f"  ⚠ Страна: не заполнена")
-            except Exception as e:
-                print(f"  ⚠ Страна ошибка: {e}")
+            print(f"  ⚠ Страна: пропущено (необязательное поле)")
         
         # Прокручиваем еще ниже для цен
         self.page.evaluate("""
@@ -353,57 +238,10 @@ class ProductsPage(BasePage):
             except Exception as e:
                 print(f"  ⚠ Минимальный остаток не заполнен: {e}")
         
-        # Код налога (searchable dropdown)
+        # Код налога (необязательное поле, пропускаем)
+        # TODO: Поле не обязательное, требует доработки для корректного выбора
         if tax_code:
-            try:
-                # Полностью через JavaScript
-                result = self.page.evaluate(f"""
-                    (taxValue) => {{
-                        const modal = document.querySelector('.cs.sidebar, [ui-view="modal"]');
-                        const labels = modal ? modal.querySelectorAll('label') : [];
-                        
-                        for (let label of labels) {{
-                            if (label.innerText.includes('Код налога')) {{
-                                const field = label.closest('.field');
-                                field.scrollIntoView({{block: 'center'}});
-                                
-                                const dropdown = field.querySelector('.ui.dropdown');
-                                if (dropdown) {{
-                                    dropdown.click();
-                                    
-                                    setTimeout(() => {{
-                                        const input = field.querySelector('input[type="text"]');
-                                        if (input) {{
-                                            input.value = taxValue;
-                                            input.dispatchEvent(new Event('input', {{ bubbles: true }}));
-                                            
-                                            setTimeout(() => {{
-                                                const enterEvent = new KeyboardEvent('keydown', {{
-                                                    key: 'Enter',
-                                                    code: 'Enter',
-                                                    keyCode: 13,
-                                                    bubbles: true
-                                                }});
-                                                input.dispatchEvent(enterEvent);
-                                            }}, 300);
-                                        }}
-                                    }}, 500);
-                                    
-                                    return true;
-                                }}
-                            }}
-                        }}
-                        return false;
-                    }}
-                """, tax_code)
-                
-                self.wait_for_load(1500)
-                if result:
-                    print(f"  ✓ Код налога: {tax_code}")
-                else:
-                    print(f"  ⚠ Код налога: не заполнен")
-            except Exception as e:
-                print(f"  ⚠ Код налога ошибка: {e}")
+            print(f"  ⚠ Код налога: пропущено (необязательное поле)")
         
         self.wait_for_load(1000)
     

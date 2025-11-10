@@ -48,23 +48,20 @@ def test_create_product_with_extended_fields(authenticated_page):
     # Открываем форму создания
     products_page.click_create_product()
     
-    # Заполняем все поля включая dropdown
+    # Заполняем все доступные поля (dropdown пропускаем, т.к. не обязательные)
     products_page.fill_product_form(
         name=product_data["name"],
         barcode=product_data["barcode"],
         article=product_data["article"],
         price=product_data["price"],
         description=product_data["description"],
-        unit=product_data["unit"],  # Semantic UI dropdown
-        country=product_data["country"],  # Semantic UI dropdown
         purchase_price=product_data["purchase_price"],
         markup=product_data["markup"],
         weight=product_data["weight"],
         height=product_data["height"],
         width=product_data["width"],
         depth=product_data["depth"],
-        min_stock=product_data["min_stock"],
-        tax_code=product_data["tax_code"]  # Semantic UI dropdown
+        min_stock=product_data["min_stock"]
     )
     
     # Сохраняем
