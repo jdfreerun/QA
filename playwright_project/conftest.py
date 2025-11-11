@@ -63,8 +63,13 @@ def authenticated_page(page):
     
     login_page.login(email, password)
     
+    # Даем дополнительное время на загрузку после авторизации
+    page.wait_for_timeout(2000)
+    
     # Проверяем успешность авторизации
-    assert login_page.is_login_successful(), "Авторизация не выполнена"
+    if not login_page.is_login_successful():
+        page.screenshot(path="screenshot_auth_failed.png")
+        pytest.fail("Авторизация не выполнена в фикстуре authenticated_page")
     
     return page
 

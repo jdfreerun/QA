@@ -311,15 +311,277 @@ class ProductsPage(BasePage):
         rows = self.page.locator('table tbody tr, .product-row')
         return rows.count()
     
-    def delete_product(self, product_name: str):
-        """Удаление товара"""
-        # Найти товар и кликнуть по кнопке удаления
-        # TODO: реализовать после изучения UI
-        pass
+    def click_product_row(self, product_name: str):
+        """
+        Клик по ссылке товара в списке для открытия карточки
+        
+        Args:
+            product_name: Название товара
+        """
+        result = self.page.evaluate(f"""
+            (name) => {{
+                // Ищем ссылку с названием товара
+                const links = document.querySelectorAll('a');
+                for (let link of links) {{
+                    if (link.textContent.includes(name) && link.href.includes('/card/catalog/get/')) {{
+                        link.click();
+                        return true;
+                    }}
+                }}
+                return false;
+            }}
+        """, product_name)
+        
+        if result:
+            # Ждем загрузки модального окна просмотра - URL изменяется на .../m/get/<id>
+            self.page.wait_for_url("**/m/get/**", timeout=10000)
+            self.wait_for_load(2000)
+            print(f"  ✓ Открыто окно просмотра товара '{product_name}'")
+            return True
+        else:
+            raise Exception(f"Ссылка на товар '{product_name}' не найдена в списке")
     
-    def edit_product(self, product_name: str):
-        """Редактирование товара"""
-        # Найти товар и открыть на редактирование
-        # TODO: реализовать после изучения UI
-        pass
+    def click_edit_button(self):
+        """
+        Нажать кнопку 'Редактировать' в модальном окне просмотра товара
+        """
+        try:
+            # Ищем элемент с cursor:pointer и текстом "Редактировать"
+            result = self.page.evaluate("""
+                () => {
+                    const elements = Array.from(document.querySelectorAll('*'));
+                    for (let el of elements) {
+                        const style = window.getComputedStyle(el);
+                        const text = el.textContent.trim();
+                        
+                        // Проверяем, что это кликабельный элемент с текстом "Редактировать"
+                        if (style.cursor === 'pointer' && text === 'Редактировать' && el.children.length === 0) {
+                            el.click();
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+            """)
+            
+            if result:
+                self.wait_for_load(2000)
+                print("  ✓ Кнопка 'Редактировать' нажата")
+            else:
+                raise Exception("Кнопка 'Редактировать' не найдена")
+        except Exception as e:
+            raise Exception(f"Не удалось нажать 'Редактировать': {e}")
+    
+    def edit_product(self, product_name: str, **kwargs):
+        """
+        Редактирование товара
+        
+        Args:
+            product_name: Название товара для редактирования
+            **kwargs: Поля для обновления
+        """
+        # Кликаем по строке товара
+        self.click_product_row(product_name)
+        
+        # Нажимаем "Редактировать"
+        self.click_edit_button()
+        
+        # Заполняем новые данные
+        self.fill_product_form(**kwargs)
+        
+        # Сохраняем
+        self.click_save()
+        
+        print(f"  ✓ Товар '{product_name}' отредактирован")
+    
+    def select_product_checkbox(self, product_name: str):
+        """
+        Выбрать чекбокс рядом с товаром
+        
+        Args:
+            product_name: Название товара
+        """
+        result = self.page.evaluate(f"""
+            (name) => {{
+                const cells = Array.from(document.querySelectorAll('td, .item'));
+                for (let cell of cells) {{
+                    if (cell.innerText.includes(name)) {{
+                        const row = cell.closest('tr, .row, .item');
+                        if (row) {{
+                            // Ищем checkbox в этой строке
+                            const checkbox = row.querySelector('input[type="checkbox"], .checkbox');
+                            if (checkbox) {{
+                                checkbox.click();
+                                return true;
+                            }}
+                        }}
+                    }}
+                }}
+                return false;
+            }}
+        """, product_name)
+        
+        if result:
+            self.wait_for_load(500)
+            print(f"  ✓ Чекбокс товара '{product_name}' выбран")
+        else:
+            raise Exception(f"Чекбокс товара '{product_name}' не найден")
+    
+    def click_actions_dropdown(self):
+        """
+        Нажать на dropdown 'Действия над товаром'
+        """
+        try:
+            # Ищем dropdown через JavaScript - это может быть кнопка или div с текстом "Действия"
+            result = self.page.evaluate("""
+                () => {
+                    const elements = document.querySelectorAll('*');
+                    for (let el of elements) {
+                        const text = el.innerText;
+                        // Ищем элемент с текстом содержащим "Действия" и курсором pointer
+                        if (text && text.includes('Действия') && text.length < 100) {
+                            const style = window.getComputedStyle(el);
+                            if (style.cursor === 'pointer' || el.tagName === 'BUTTON' || el.getAttribute('ng-click')) {
+                                el.click();
+                                return true;
+                            }
+                        }
+                    }
+                    return false;
+                }
+            """)
+            
+            if result:
+                self.wait_for_load(1500)  # Даем время dropdown'у открыться
+                print("  ✓ Dropdown 'Действия' открыт")
+            else:
+                raise Exception("Dropdown 'Действия' не найден")
+        except Exception as e:
+            raise Exception(f"Не удалось открыть dropdown 'Действия': {e}")
+    
+    def click_delete_in_actions(self):
+        """
+        Нажать 'Удалить' в dropdown действий
+        """
+        try:
+            # Ищем элемент с ng-click="removeSelectedProducts()" через JavaScript
+            result = self.page.evaluate("""
+                () => {
+                    // Ищем элемент с ng-click содержащим remove
+                    const removeButton = document.querySelector('div[ng-click="removeSelectedProducts()"], [ng-click*="remove"]');
+                    if (removeButton) {
+                        removeButton.click();
+                        return {success: true, method: 'ng-click'};
+                    }
+                    
+                    // Альтернатива - ищем в видимых элементах dropdown
+                    const items = Array.from(document.querySelectorAll('.item, .menu .item, div[permission*="delete"]'));
+                    for (let item of items) {
+                        const text = item.innerText.trim().toLowerCase();
+                        const isVisible = item.offsetParent !== null;
+                        
+                        if (text === 'удалить' && isVisible) {
+                            item.click();
+                            return {success: true, method: 'visible item'};
+                        }
+                    }
+                    
+                    return {success: false};
+                }
+            """)
+            
+            if result and result.get('success'):
+                self.wait_for_load(1500)
+                print(f"  ✓ Кнопка 'Удалить' нажата ({result.get('method', 'unknown')})")
+            else:
+                raise Exception("Кнопка 'Удалить' не найдена в меню")
+        except Exception as e:
+            raise Exception(f"Не удалось нажать 'Удалить': {e}")
+    
+    def confirm_delete(self):
+        """
+        Подтвердить удаление товара в модальном окне подтверждения
+        """
+        try:
+            # Ждем появления модального окна подтверждения
+            self.wait_for_load(2000)
+            
+            # Ищем кнопку "Да" в модальном окне
+            result = self.page.evaluate("""
+                () => {
+                    // Ищем все элементы, которые могут быть кнопками
+                    const elements = Array.from(document.querySelectorAll('button, div.button, a.button, .ui.button, div[ng-click], [ng-click]'));
+                    
+                    // Фильтруем только видимые
+                    const visible = elements.filter(el => {
+                        const style = window.getComputedStyle(el);
+                        return style.display !== 'none' && el.offsetParent !== null;
+                    });
+                    
+                    // Ищем кнопку с текстом "Да"
+                    for (let el of visible) {
+                        const text = el.textContent.trim().toLowerCase();
+                        if (text === 'да') {
+                            el.click();
+                            return {success: true, text: el.textContent.trim(), class: el.className};
+                        }
+                    }
+                    
+                    // Если не нашли "Да", ищем кнопку OK с классом right
+                    for (let el of visible) {
+                        const classes = el.className.toLowerCase();
+                        if (classes.includes('ok') && classes.includes('right')) {
+                            el.click();
+                            return {success: true, text: el.textContent.trim(), class: el.className};
+                        }
+                    }
+                    
+                    // Возвращаем список доступных кнопок для отладки
+                    return {
+                        success: false, 
+                        available: visible.map(el => ({
+                            text: el.textContent.trim().substring(0, 30),
+                            tag: el.tagName,
+                            class: el.className.substring(0, 50)
+                        })).slice(0, 5)
+                    };
+                }
+            """)
+            
+            if result and result.get('success'):
+                self.wait_for_load(2000)
+                print(f"  ✓ Подтверждение 'Да' нажато (текст: '{result.get('text', '')}')")
+            else:
+                available = result.get('available', []) if result else []
+                buttons_info = '\n    '.join([f"{b.get('text', '')} [{b.get('tag', '')}] (class: {b.get('class', '')})" for b in available])
+                raise Exception(f"Кнопка 'Да' не найдена. Доступные кнопки:\n    {buttons_info}")
+        except Exception as e:
+            raise Exception(f"Не удалось подтвердить удаление: {e}")
+    
+    def delete_product(self, product_name: str):
+        """
+        Удаление товара
+        
+        Args:
+            product_name: Название товара для удаления
+        
+        Шаги:
+            1. Выбрать чекбокс товара
+            2. Открыть dropdown 'Действия'
+            3. Нажать 'Удалить'
+            4. Подтвердить удаление (нажать "Да")
+        """
+        # Выбираем чекбокс
+        self.select_product_checkbox(product_name)
+        
+        # Открываем dropdown действий
+        self.click_actions_dropdown()
+        
+        # Кликаем "Удалить" - откроется модальное окно подтверждения
+        self.click_delete_in_actions()
+        
+        # Подтверждаем удаление
+        self.confirm_delete()
+        
+        print(f"  ✓ Товар '{product_name}' удален")
 
