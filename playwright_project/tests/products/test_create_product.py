@@ -33,6 +33,28 @@ def test_create_product_with_all_fields(authenticated_page):
     print(f"   Название: {product_data['name']}")
     print(f"   Штрих-код: {product_data['barcode']}")
     print(f"   Артикул: {product_data['article']}")
+    print(f"   Цена продажи: {product_data['price']}")
+    print(f"   Описание: {product_data['description'][:50]}...")
+    print(f"   Единица измерения: {product_data['unit']}")
+    print(f"   Категория: {product_data['category']}")
+    print(f"   Страна: {product_data['country']}")
+    print(f"   Цена закупки: {product_data['purchase_price']}")
+    print(f"   Наценка: {product_data['markup']}%")
+    print(f"   Вес: {product_data['weight']}")
+    print(f"   Высота: {product_data['height']}")
+    print(f"   Ширина: {product_data['width']}")
+    print(f"   Глубина: {product_data['depth']}")
+    print(f"   Минимальный остаток: {product_data['min_stock']}")
+    print(f"   Код налога: {product_data['tax_code']}")
+    if product_data.get('supplier'):
+        print(f"   Поставщик: {product_data['supplier']}")
+    if product_data.get('marking_type'):
+        print(f"   Тип маркировки: {product_data['marking_type']}")
+    if product_data.get('tax_system'):
+        print(f"   Система налогообложения: {product_data['tax_system']}")
+    if product_data.get('taxes'):
+        print(f"   Налоги: {product_data['taxes']}")
+    
     
     # Создаем товар
     products_page.click_create_product()
@@ -43,6 +65,7 @@ def test_create_product_with_all_fields(authenticated_page):
         price=product_data["price"],
         description=product_data["description"],
         unit=product_data["unit"],
+        category=product_data["category"],
         country=product_data["country"],
         purchase_price=product_data["purchase_price"],
         markup=product_data["markup"],
@@ -51,7 +74,11 @@ def test_create_product_with_all_fields(authenticated_page):
         width=product_data["width"],
         depth=product_data["depth"],
         min_stock=product_data["min_stock"],
-        tax_code=product_data["tax_code"]
+        tax_code=product_data["tax_code"],
+        supplier=product_data.get("supplier"),
+        marking_type=product_data.get("marking_type"),
+        tax_system=product_data.get("tax_system"),
+        taxes=product_data.get("taxes")
     )
     products_page.click_save()
     

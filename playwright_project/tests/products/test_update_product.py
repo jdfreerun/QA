@@ -47,39 +47,18 @@ def test_edit_product(authenticated_page):
     new_name = original_name + " (EDITED)"
     new_price = 2000
     
-    print(f"\n✏️ Редактируем товар на: {new_name}")
+    print(f"\n✏️ Редактируем товар:")
+    print(f"   Старое название: {original_name}")
+    print(f"   Новое название: {new_name}")
+    print(f"   Старая цена: {original_price}")
+    print(f"   Новая цена: {new_price}")
     
-    # Кликаем по строке
-    products_page.click_product_row(original_name)
-    
-    # Нажимаем "Редактировать"
-    products_page.click_edit_button()
-    
-    # Обновляем поля
-    # Очищаем и заполняем название
-    modal_inputs = authenticated_page.locator('[ui-view="modal"] input[type="text"]')
-    if modal_inputs.count() > 1:
-        name_input = modal_inputs.nth(1)
-        name_input.fill("")  # Очищаем
-        name_input.fill(new_name)
-        print(f"  ✓ Новое название: {new_name}")
-    
-    # Обновляем цену
-    price_input = authenticated_page.locator('.field:has-text("Цена продажи") input[type="number"]').first
-    if price_input.count() > 0:
-        authenticated_page.evaluate("""
-            () => {
-                const modal = document.querySelector('.cs.sidebar, [ui-view="modal"]');
-                modal.scrollTop = modal.scrollHeight;
-            }
-        """)
-        authenticated_page.wait_for_timeout(500)
-        price_input.scroll_into_view_if_needed()
-        price_input.fill(str(new_price))
-        print(f"  ✓ Новая цена: {new_price}")
-    
-    # Сохраняем
-    products_page.click_save()
+    # Используем метод edit_product из ProductsPage
+    products_page.edit_product(
+        product_name=original_name,
+        name=new_name,
+        price=new_price
+    )
     
     # Проверяем обновление
     assert products_page.is_product_in_list(new_name), \

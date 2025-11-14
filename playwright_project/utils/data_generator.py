@@ -39,7 +39,7 @@ class TestDataGenerator:
         return random.randint(100, 50000)
     
     @staticmethod
-    def generate_product_data(full: bool = False) -> dict:
+    def generate_product_data(full: bool = True) -> dict:
         """
         Генерация полного набора данных для товара
         
@@ -69,7 +69,11 @@ class TestDataGenerator:
                 "width": round(random.uniform(1, 100), 1),
                 "depth": round(random.uniform(1, 100), 1),
                 "min_stock": random.randint(1, 10),
-                "tax_code": str(random.randint(1000, 9999))
+                "tax_code": str(random.randint(1000, 9999)),
+                "supplier": random.choice(["Тестовщик", "Поставщик", "Поставщик номер десят"]),
+                "marking_type": random.choice(["Без маркировки", "Обувь", "Изделия из меха"]),
+                "tax_system": random.choice(["ЕСХН", "ОСНО", "ПСН", "УСН Доход"]),
+                "taxes": [random.choice(["Tax 1", "Tax", "Test"])]  # Список из одного налога
             })
         
         return base_data
